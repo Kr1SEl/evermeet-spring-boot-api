@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: dev
+  datasource:
+    url: jdbc:postgresql://localhost:5332/mate
+    username: kris
+    password: sa
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show_sql: false
