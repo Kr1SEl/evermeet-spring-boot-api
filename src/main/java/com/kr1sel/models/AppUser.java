@@ -1,43 +1,48 @@
-package com.kr1sel;
+package com.kr1sel.models;
 
 
+import com.kr1sel.utils.Interest;
 import jakarta.persistence.*;
 
 import java.util.List;
 import java.util.Objects;
-
-enum Interest {
-    PROGRAMMING,
-    GAMING,
-    SMOKING,
-    DRINKING
-}
+import java.util.Set;
 
 @Entity
-public class Person {
+public class AppUser extends AbstractModel{
 
-    @Id
-    @SequenceGenerator(name="person_id_sequence", sequenceName = "person_id_sequence")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_id_sequence")
-    private Integer id;
     private String name;
-    private int age;
-    private String location;
-    private List<Interest> interests;
 
-    public Person(String name, int age, String location, List<Interest> interests) {
+    private int age;
+
+    private String location;
+
+    private boolean isActive;
+
+    private Set<Interest> interests;
+
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
+    private Set<Meetup> meetups;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_connections",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "friend_id")
+    )
+    private Set<AppUser> friends;
+
+    public AppUser(String name, int age, String location, Set<Interest> interests) {
         this.name = name;
         this.age = age;
         this.location = location;
         this.interests = interests;
+        this.isActive = true;
     }
 
-    public Person() {
+    public AppUser() {
     }
 
-    public Integer getId() {
-        return id;
-    }
     public void setName(String name) {
         this.name = name;
     }
@@ -50,7 +55,7 @@ public class Person {
         this.location = location;
     }
 
-    public void setInterests(List<Interest> interests) {
+    public void setInterests(Set<Interest> interests) {
         this.interests = interests;
     }
 
@@ -67,7 +72,7 @@ public class Person {
         return location;
     }
 
-    public List<Interest> getInterests() {
+    public Set<Interest> getInterests() {
         return interests;
     }
 
@@ -75,7 +80,7 @@ public class Person {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Person person = (Person) o;
+        AppUser person = (AppUser) o;
         return age == person.age && Objects.equals(name, person.name) && Objects.equals(location, person.location) && Objects.equals(interests, person.interests);
     }
 
