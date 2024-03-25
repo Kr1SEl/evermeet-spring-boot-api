@@ -1,25 +1,34 @@
 package com.kr1sel.models;
 
 
+import com.kr1sel.utils.AppUserRole;
 import com.kr1sel.utils.Interest;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
-public class AppUser extends AbstractModel{
+public class AppUser extends AbstractModel implements UserDetails {
 
     private String name;
-
+    private String username;
+    private String password;
     private int age;
-
     private String location;
-
     private boolean isActive;
-
     private Set<Interest> interests;
+    @Enumerated(value = EnumType.STRING)
+    private AppUserRole userRole;
 
     @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
     private Set<Meetup> meetups;
@@ -32,70 +41,61 @@ public class AppUser extends AbstractModel{
     )
     private Set<AppUser> friends;
 
-    public AppUser(String name, int age, String location, Set<Interest> interests) {
+    public AppUser(String name, String username, String password, int age, String location) {
         this.name = name;
+        this.username = username;
+        this.password = password;
         this.age = age;
-        this.location = location;
-        this.interests = interests;
         this.isActive = true;
-    }
-
-    public AppUser() {
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public void setLocation(String location) {
         this.location = location;
-    }
-
-    public void setInterests(Set<Interest> interests) {
-        this.interests = interests;
+        userRole = AppUserRole.ROLE_USER;
     }
 
 
-    public String getName() {
-        return name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public Set<Interest> getInterests() {
-        return interests;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AppUser person = (AppUser) o;
-        return age == person.age && Objects.equals(name, person.name) && Objects.equals(location, person.location) && Objects.equals(interests, person.interests);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, age, location, interests);
-    }
 
     @Override
     public String toString() {
         return "Person{" +
-                "name='" + name + '\'' +
+                "name='" + username + '\'' +
                 ", age=" + age +
                 ", location='" + location + '\'' +
                 ", interests=" + interests +
                 '}';
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(this.userRole.name());
+        return Collections.singletonList(authority);
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return isActive;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return isActive;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return isActive;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isActive;
     }
 }

@@ -8,6 +8,6 @@ import java.util.function.Function;
 public class AppUserMapper implements Function<AppUser, AppUserDTO> {
     @Override
     public AppUserDTO apply(AppUser appUser) {
-        return new AppUserDTO(appUser.getName(), appUser.getAge(), appUser.getLocation(), appUser.getInterests());
+        return new AppUserDTO(appUser.getUsername(), appUser.getAge(), appUser.getLocation(), appUser.getInterests());
     }
 }
