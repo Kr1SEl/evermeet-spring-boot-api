@@ -6,7 +6,6 @@ import com.kr1sel.models.AppUser;
 import com.kr1sel.exceptions.UserNotFoundException;
 import com.kr1sel.repositories.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,13 +13,13 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/v1/user")
-public class UserController {
+public class AppUserController {
 
     private final AppUserRepository appUserRepository;
     private final AppUserMapper appUserMapper;
 
     @Autowired
-    public UserController(AppUserRepository appUserRepository){
+    public AppUserController(AppUserRepository appUserRepository){
         this.appUserRepository = appUserRepository;
         this.appUserMapper = new AppUserMapper();
     }
