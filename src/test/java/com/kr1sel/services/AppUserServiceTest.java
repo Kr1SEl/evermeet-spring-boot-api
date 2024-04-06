@@ -5,6 +5,7 @@ import com.kr1sel.exceptions.UserNotFoundException;
 import com.kr1sel.mappers.AppUserMapper;
 import com.kr1sel.models.AppUser;
 import com.kr1sel.repositories.AppUserRepository;
+import com.kr1sel.utils.Interest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -21,6 +22,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -46,7 +48,14 @@ class AppUserServiceTest {
     @Test
     void loadUserByUsername() {
         String username = "KyryloTest";
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(new AppUser("Kyrylo", username, "password", 21, "Wroclaw")));
+        when(userRepository.findByUsername(username))
+                .thenReturn(Optional.of(new AppUser(
+                        "Kyrylo",
+                        username,
+                        "password",
+                        (short) 21,
+                        "Wroclaw",
+                        Set.of(Interest.IT, Interest.BIKES, Interest.CARS, Interest.GAMING))));
         UserDetails answer = underTest.loadUserByUsername(username);
         assertEquals(answer.getUsername(), username);
         verify(userRepository).findByUsername(username);
@@ -56,7 +65,13 @@ class AppUserServiceTest {
     @Test
     void signUpRegistersUser() throws UserAlreadyExistsException {
         String username = "KyryloTest";
-        AppUser user = new AppUser("Kyrylo", username, "password", 22, "Wroclaw");
+        AppUser user = new AppUser(
+                "Kyrylo",
+                username,
+                "password",
+                (short) 22,
+                "Wroclaw",
+                Set.of(Interest.IT, Interest.BIKES, Interest.CARS, Interest.GAMING));
         underTest.signUp(user);
         ArgumentCaptor<AppUser> appUserArgumentCaptor = ArgumentCaptor.forClass(AppUser.class);
         verify(userRepository).save(appUserArgumentCaptor.capture());
@@ -67,7 +82,13 @@ class AppUserServiceTest {
     @Test
     void signUpThrowsException() throws UserAlreadyExistsException {
         String username = "KyryloTest";
-        AppUser user = new AppUser("Kyrylo", username, "password", 22, "Wroclaw");
+        AppUser user = new AppUser(
+                "Kyrylo",
+                username,
+                "password",
+                (short) 22,
+                "Wroclaw",
+                Set.of(Interest.IT, Interest.BIKES, Interest.CARS, Interest.GAMING));
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
         assertThrows(UserAlreadyExistsException.class, () -> underTest.signUp(user));
         verify(userRepository, never()).save(user);

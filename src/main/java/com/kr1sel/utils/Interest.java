@@ -1,8 +1,15 @@
 package com.kr1sel.utils;
 
 public enum Interest {
-    PROGRAMMING,
+    IT,
     GAMING,
-    SMOKING,
-    DRINKING
+    BEER,
+    PETS,
+    MUSIC,
+    BOOKS,
+    SPORT,
+    ANIME,
+    MOVIES,
+    CARS,
+    BIKES
 }

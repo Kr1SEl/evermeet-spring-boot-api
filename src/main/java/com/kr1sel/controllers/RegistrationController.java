@@ -19,19 +19,17 @@ import java.util.Map;
 @RequestMapping(path = "api/v1/auth")
 public class RegistrationController {
 
-    private final AppUserService appUserService;
     private final RegistrationService registrationService;
 
-
     @Autowired
-    public RegistrationController(AppUserService appUserService, RegistrationService registrationService){
-        this.appUserService = appUserService;
+    public RegistrationController(RegistrationService registrationService){
         this.registrationService = registrationService;
     }
 
     @PostMapping(path = "register")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void registerUser(@Valid @RequestBody NewAppUserRequestDTO request) throws UserAlreadyExistsException {
+    public void registerUser(@Valid @RequestBody NewAppUserRequestDTO request)
+            throws UserAlreadyExistsException {
         registrationService.register(request);
     }
 

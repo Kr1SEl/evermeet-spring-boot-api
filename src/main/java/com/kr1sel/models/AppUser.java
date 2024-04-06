@@ -4,7 +4,6 @@ package com.kr1sel.models;
 import com.kr1sel.utils.AppUserRole;
 import com.kr1sel.utils.Interest;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,17 +19,36 @@ import java.util.*;
 @Entity
 public class AppUser extends AbstractModel implements UserDetails {
 
+    @Column(nullable = false, length = 50)
     private String name;
+
+    @Column(nullable = false, unique = true, length = 16)
     private String username;
+
+    @Column(nullable = false, length = 25)
     private String password;
-    private int age;
+
+    //    TODO Azure BLOB for image
+
+    private short age;
+
     private String location;
+
     private boolean isActive;
+
+    @Column(nullable = false)
     private Set<Interest> interests;
+
     @Enumerated(value = EnumType.STRING)
     private AppUserRole userRole;
 
-    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "rating_id")
+    private AppUserRating userRating;
+
+    @OneToMany(mappedBy = "author",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.REMOVE)
     private Set<Meetup> meetups;
 
     @ManyToMany
@@ -41,13 +59,19 @@ public class AppUser extends AbstractModel implements UserDetails {
     )
     private Set<AppUser> friends;
 
-    public AppUser(String name, String username, String password, int age, String location) {
+    public AppUser(String name,
+                   String username,
+                   String password,
+                   short age,
+                   String location,
+                   Set<Interest> interests) {
         this.name = name;
         this.username = username;
         this.password = password;
         this.age = age;
         this.isActive = true;
         this.location = location;
+        this.interests = interests;
         userRole = AppUserRole.ROLE_USER;
     }
 
