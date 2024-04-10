@@ -33,9 +33,12 @@ public class WebSecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authz) ->
                                 authz
-                                .requestMatchers("/api/v*/auth/**").hasAnyRole("USER", "ADMIN")
-                                .requestMatchers("/api/v*/user/**").hasRole("ADMIN")
-                                .requestMatchers("/**").anonymous()
+                                .requestMatchers("/api/v*/auth/**").permitAll()
+                                .requestMatchers("/api/v*/image/**").hasAnyRole("ADMIN", "USER")
+                                .requestMatchers("/api/v*/rating/**").hasAnyRole("ADMIN", "USER")
+                                .requestMatchers("/api/v*/meetup/**").hasAnyRole("ADMIN", "USER")
+                                .requestMatchers("/api/v*/user/**").hasAnyRole("ADMIN")
+                                .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
