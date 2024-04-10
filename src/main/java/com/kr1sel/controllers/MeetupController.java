@@ -28,8 +28,10 @@ public class MeetupController {
     }
 
     @GetMapping
-    public List<MeetupDTO> getFilteredMeetups(@AuthenticationPrincipal AppUser user){
-        return meetupService.getMeetupsFilteredByInterests(user);
+    public List<MeetupDTO> getFilteredMeetups(@AuthenticationPrincipal AppUser user,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size){
+        return meetupService.getMeetupsFilteredByInterests(user, page, size);
     }
 
     @PostMapping
@@ -60,7 +62,9 @@ public class MeetupController {
     @PutMapping(path = "{id}/participate")
     public void subscribeUserToMeetup(@PathVariable Long id,
                                       @AuthenticationPrincipal AppUser appUser)
-            throws MeetupNotFoundException, MeetupIsFullException, UserAlreadySubscribedToMeetupException {
+            throws MeetupNotFoundException,
+            MeetupIsFullException,
+            UserAlreadySubscribedToMeetupException {
         meetupService.addMeetupParticipant(id, appUser);
     }
 

@@ -8,7 +8,8 @@ import com.kr1sel.models.AppUser;
 import com.kr1sel.models.Meetup;
 import com.kr1sel.repositories.MeetupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -41,12 +42,15 @@ public class MeetupService {
         return createdMeetup.getId();
     }
 
-    public List<MeetupDTO> getMeetupsFilteredByInterests(AppUser user){
+    public List<MeetupDTO> getMeetupsFilteredByInterests(AppUser user, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
         return meetupRepository
-                .findByInterestsAndLocationAndStartDateTimeGreaterThan(
+                .findByInterestsAndLocationAndStartDateTimeGreaterThanAndAuthorIdNot(
                         user.getInterests(),
                         user.getLocation(),
-                        LocalDateTime.now())
+                        LocalDateTime.now(),
+                        user.getId(),
+                        pageable)
                 .stream().map(meetupMapper).toList();
     }
 

@@ -13,23 +13,26 @@ import java.util.Set;
 
 public interface MeetupRepository extends JpaRepository<Meetup, Long> {
 
-    String FILTER_MEETUPS_BY_INTERESTS_AND_LOCATION_AND_START_DATE_TIME =
+    String FILTER_MEETUPS_BY_INTERESTS_AND_LOCATION_AND_START_DATE_TIME_AND_AUTHOR_ID =
             "SELECT DISTINCT m FROM Meetup m " +
-            "JOIN m.interests i " +
-            "WHERE i IN :interests " +
-            "AND m.location LIKE %:location% " +
-            "AND m.startDateTime > :startDateTime";
+                    "JOIN m.interests i " +
+                    "WHERE i IN :interests " +
+                    "AND m.location LIKE %:location% " +
+                    "AND m.startDateTime > :startDateTime " +
+                    "AND m.author <> :authorId";
 
-    @Query(FILTER_MEETUPS_BY_INTERESTS_AND_LOCATION_AND_START_DATE_TIME)
-    List<Meetup> findByInterestsAndLocationAndStartDateTimeGreaterThan(
-            @Param("interests") Set<Interest> interests,
-            @Param("location") String location,
-            @Param("startDateTime") LocalDateTime startDateTime);
-
-    @Query(FILTER_MEETUPS_BY_INTERESTS_AND_LOCATION_AND_START_DATE_TIME)
-    List<Meetup> findByInterestsAndLocationAndStartDateTimeGreaterThan(
+    @Query(FILTER_MEETUPS_BY_INTERESTS_AND_LOCATION_AND_START_DATE_TIME_AND_AUTHOR_ID)
+    List<Meetup> findByInterestsAndLocationAndStartDateTimeGreaterThanAndAuthorIdNot(
             @Param("interests") Set<Interest> interests,
             @Param("location") String location,
             @Param("startDateTime") LocalDateTime startDateTime,
+            @Param("authorId") Long authorId);
+
+    @Query(FILTER_MEETUPS_BY_INTERESTS_AND_LOCATION_AND_START_DATE_TIME_AND_AUTHOR_ID)
+    List<Meetup> findByInterestsAndLocationAndStartDateTimeGreaterThanAndAuthorIdNot(
+            @Param("interests") Set<Interest> interests,
+            @Param("location") String location,
+            @Param("startDateTime") LocalDateTime startDateTime,
+            @Param("authorId") Long authorId,
             Pageable pageable);
 }
