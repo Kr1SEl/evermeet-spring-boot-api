@@ -45,7 +45,6 @@ public record NewAppUserRequestDTO(
         String location,
 
         @NotNull
-        @NotBlank
         @Size(min = 1)
         Set<Interest> interests
 

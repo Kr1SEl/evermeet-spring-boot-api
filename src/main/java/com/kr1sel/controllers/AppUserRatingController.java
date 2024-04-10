@@ -11,7 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "api/v1/user/rating")
+@RequestMapping(path = "api/v1/rating")
 public class AppUserRatingController {
 
     private final AppUserRatingService appUserRatingService;
@@ -22,14 +22,14 @@ public class AppUserRatingController {
     }
 
     @GetMapping(path = "{username}")
-    public double getRatingByUsername(@RequestParam String username)
+    public double getRatingByUsername(@PathVariable String username)
             throws UserRatingNotFoundException, UserNotFoundException {
         return appUserRatingService.getRatingByUsername(username);
     }
 
     @PutMapping(path = "{username}")
-    public void rateUserByUsername(@RequestParam String username,
-                                   @PathVariable byte grade,
+    public void rateUserByUsername(@PathVariable String username,
+                                   @RequestParam byte grade,
                                    @AuthenticationPrincipal AppUser user)
             throws UserNotFoundException,
             UserRatingOutOfBoundsException,

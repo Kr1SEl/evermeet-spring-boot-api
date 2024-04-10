@@ -25,7 +25,7 @@ public class AppUser extends AbstractModel implements UserDetails {
     @Column(nullable = false, unique = true, length = 16)
     private String username;
 
-    @Column(nullable = false, length = 25)
+    @Column(nullable = false)
     private String password;
 
     //    TODO Azure BLOB for image
@@ -41,15 +41,6 @@ public class AppUser extends AbstractModel implements UserDetails {
 
     @Enumerated(value = EnumType.STRING)
     private AppUserRole userRole;
-
-    @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "rating_id")
-    private AppUserRating userRating;
-
-    @OneToMany(mappedBy = "author",
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.REMOVE)
-    private Set<Meetup> meetups;
 
     @ManyToMany
     @JoinTable(
@@ -72,9 +63,8 @@ public class AppUser extends AbstractModel implements UserDetails {
         this.isActive = true;
         this.location = location;
         this.interests = interests;
-        userRole = AppUserRole.ROLE_USER;
+        this.userRole = AppUserRole.ROLE_USER;
     }
-
 
 
     @Override

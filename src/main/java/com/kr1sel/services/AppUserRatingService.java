@@ -58,7 +58,7 @@ public class AppUserRatingService {
         }
         Optional<AppUser> user = appUserRepository.findByUsername(username);
         if(user.isPresent()) {
-            if (requestUser.equals(user)) {
+            if (requestUser.equals(user.get())) {
                 throw new UserIsOwnerOfTheRatingException();
             }
             Optional<AppUserRating> userRating = appUserRatingRepository.findById(user.get());
@@ -75,6 +75,7 @@ public class AppUserRatingService {
     }
 
     private double calculateRating(AppUserRating userRating){
-        return (double) userRating.getTotalRating() / userRating.getNumberOfVotes();
+        double rating = (double) userRating.getTotalRating() / userRating.getNumberOfVotes();
+        return Math.round(rating * 10.0) / 10.0;
     }
 }

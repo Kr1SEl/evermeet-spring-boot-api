@@ -4,6 +4,7 @@ import com.kr1sel.dto.NewAppUserRequestDTO;
 import com.kr1sel.exceptions.UserAlreadyExistsException;
 import com.kr1sel.models.AppUser;
 import com.kr1sel.models.AppUserRating;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class RegistrationService {
         this.appUserRatingService = appUserRatingService;
     }
 
+    @Transactional
     public void register(NewAppUserRequestDTO request)
             throws UserAlreadyExistsException {
         AppUser newUser = new AppUser(
