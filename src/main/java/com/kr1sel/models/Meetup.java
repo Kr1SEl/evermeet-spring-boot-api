@@ -19,8 +19,6 @@ public class Meetup extends AbstractModel{
 
     private String location;
 
-//    TODO Azure BLOB for image
-
     private boolean isPrivate;
 
     private int maxPeople;

@@ -2,6 +2,7 @@ package com.kr1sel.repositories;
 
 import com.kr1sel.models.Meetup;
 import com.kr1sel.utils.Interest;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
