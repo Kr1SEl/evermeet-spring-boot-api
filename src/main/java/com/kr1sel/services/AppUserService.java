@@ -1,11 +1,13 @@
 package com.kr1sel.services;
 
 import com.kr1sel.dto.AppUserDTO;
-import com.kr1sel.exceptions.UserAlreadyExistsException;
-import com.kr1sel.exceptions.UserNotFoundException;
+import com.kr1sel.exceptions.*;
 import com.kr1sel.mappers.AppUserMapper;
 import com.kr1sel.models.AppUser;
+import com.kr1sel.models.ImageMetadata;
 import com.kr1sel.repositories.AppUserRepository;
+import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class AppUserService implements UserDetailsService {
@@ -43,6 +46,10 @@ public class AppUserService implements UserDetailsService {
         }else{
             throw new UserNotFoundException();
         }
+    }
+
+    public AppUserDTO deleteUserByObject(AppUser user) throws UserNotFoundException {
+        return deleteUserByUserId(user.getId());
     }
 
     public AppUserDTO deleteUserByUserId(Long id) throws UserNotFoundException {
@@ -78,5 +85,106 @@ public class AppUserService implements UserDetailsService {
 
     public void updateUser(AppUser user){
         appUserRepository.save(user);
+    }
+
+    @Transactional
+    public void sendFriendshipRequest(Long targetUserId, AppUser senderModel)
+            throws UserNotFoundException,
+            FriendshipAlreadyEstablishedException,
+            RequestAlreadySentException,
+            FriendshipToUserIsNotAllowedException {
+        Optional<AppUser> target = appUserRepository.findById(targetUserId);
+        Optional<AppUser> sender = appUserRepository.findById(senderModel.getId());
+        if(target.isPresent() && sender.isPresent()){
+            AppUser targetUser = target.get();
+            AppUser senderUser = sender.get();
+            if(senderUser.equals(targetUser)){
+                throw new FriendshipToUserIsNotAllowedException();
+            }
+            if(!senderUser.hasFriend(targetUser)){
+                if(senderUser.hasFriendRequestsFrom(targetUser)){
+                    senderUser.becomeFriendsWith(targetUser);
+                    updateUser(senderUser);
+                    targetUser.becomeFriendsWith(senderUser);
+                    updateUser(targetUser);
+                }else if(targetUser.hasFriendRequestsFrom(senderUser)){
+                    throw new RequestAlreadySentException();
+                }else{
+                    targetUser.addFriendRequestFrom(senderUser);
+                    updateUser(targetUser);
+                }
+            }else{
+                throw new FriendshipAlreadyEstablishedException();
+            }
+        }else{
+            throw new UserNotFoundException();
+        }
+    }
+
+    @Transactional
+    public void removeFriendshipRequest(Long targetUserId, AppUser senderUser)
+            throws UserNotFoundException,
+            NothingToModifyException {
+        Optional<AppUser> target = appUserRepository.findById(targetUserId);
+        if(target.isPresent()){
+            AppUser targetUser = target.get();
+            if(targetUser.hasFriendRequestsFrom(senderUser)){
+                targetUser.removeFriendRequestFrom(senderUser);
+                updateUser(targetUser);
+            }else{
+                throw new NothingToModifyException();
+            }
+        }else{
+            throw new UserNotFoundException();
+        }
+    }
+
+    @Transactional
+    public void acceptFriendshipRequest(Long targetUserId, AppUser senderModel)
+            throws UserNotFoundException,
+            NoFriendshipRequestException {
+        Optional<AppUser> target = appUserRepository.findById(targetUserId);
+        Optional<AppUser> sender = appUserRepository.findById(senderModel.getId());
+        if(target.isPresent() && sender.isPresent()){
+            AppUser targetUser = target.get();
+            AppUser senderUser = sender.get();
+            if(senderUser.hasFriendRequestsFrom(targetUser)){
+                senderUser.becomeFriendsWith(targetUser);
+                updateUser(senderUser);
+                targetUser.becomeFriendsWith(senderUser);
+                updateUser(targetUser);
+            }else{
+                throw new NoFriendshipRequestException();
+            }
+        }else{
+            throw new UserNotFoundException();
+        }
+    }
+
+    @Transactional
+    public void removeFriend(Long targetUserId, AppUser senderModel)
+            throws UserNotFoundException,
+            NothingToModifyException {
+        Optional<AppUser> target = appUserRepository.findById(targetUserId);
+        Optional<AppUser> sender = appUserRepository.findById(senderModel.getId());
+        if(target.isPresent() && sender.isPresent()){
+            AppUser targetUser = target.get();
+            AppUser senderUser = sender.get();
+            if(senderUser.hasFriend(targetUser)){
+                senderUser.removeFriend(targetUser);
+                updateUser(senderUser);
+                targetUser.removeFriend(senderUser);
+                updateUser(targetUser);
+            }else{
+                throw new NothingToModifyException();
+            }
+        }else{
+            throw new UserNotFoundException();
+        }
+    }
+
+    public void updateUserImage(ImageMetadata image, AppUser user){
+        user.setUserImage(image);
+        updateUser(user);
     }
 }
