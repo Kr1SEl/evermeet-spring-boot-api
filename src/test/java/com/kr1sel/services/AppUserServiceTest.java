@@ -32,30 +32,32 @@ class AppUserServiceTest {
 
     @Mock
     private AppUserRepository userRepository;
+
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @InjectMocks
     private AppUserService underTest;
 
+    String username = "KyryloTest";
+    AppUser user = new AppUser(
+            "Kyrylo",
+            username,
+            "password",
+            (short) 22,
+            "Wroclaw",
+            Set.of(Interest.IT, Interest.BIKES, Interest.CARS, Interest.GAMING));
+
     @Test
     void loadUserByUsernameThrowsException() {
-        String username = "KyryloTest";
         assertThrows(UsernameNotFoundException.class, () -> underTest.loadUserByUsername(username));
         verify(userRepository).findByUsername(username);
     }
 
     @Test
-    void loadUserByUsername() {
-        String username = "KyryloTest";
+    void shouldLoadUserByUsername() {
         when(userRepository.findByUsername(username))
-                .thenReturn(Optional.of(new AppUser(
-                        "Kyrylo",
-                        username,
-                        "password",
-                        (short) 21,
-                        "Wroclaw",
-                        Set.of(Interest.IT, Interest.BIKES, Interest.CARS, Interest.GAMING))));
+                .thenReturn(Optional.of(user));
         UserDetails answer = underTest.loadUserByUsername(username);
         assertEquals(answer.getUsername(), username);
         verify(userRepository).findByUsername(username);
@@ -63,15 +65,8 @@ class AppUserServiceTest {
     }
 
     @Test
-    void signUpRegistersUser() throws UserAlreadyExistsException {
-        String username = "KyryloTest";
-        AppUser user = new AppUser(
-                "Kyrylo",
-                username,
-                "password",
-                (short) 22,
-                "Wroclaw",
-                Set.of(Interest.IT, Interest.BIKES, Interest.CARS, Interest.GAMING));
+    void signUpShouldRegistersUser() throws UserAlreadyExistsException {
+
         underTest.signUp(user);
         ArgumentCaptor<AppUser> appUserArgumentCaptor = ArgumentCaptor.forClass(AppUser.class);
         verify(userRepository).save(appUserArgumentCaptor.capture());
@@ -81,14 +76,6 @@ class AppUserServiceTest {
 
     @Test
     void signUpThrowsException() throws UserAlreadyExistsException {
-        String username = "KyryloTest";
-        AppUser user = new AppUser(
-                "Kyrylo",
-                username,
-                "password",
-                (short) 22,
-                "Wroclaw",
-                Set.of(Interest.IT, Interest.BIKES, Interest.CARS, Interest.GAMING));
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
         assertThrows(UserAlreadyExistsException.class, () -> underTest.signUp(user));
         verify(userRepository, never()).save(user);

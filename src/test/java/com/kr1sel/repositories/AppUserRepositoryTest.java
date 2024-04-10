@@ -6,6 +6,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
@@ -26,7 +28,7 @@ class AppUserRepositoryTest {
     }
 
     @Test
-    void itShouldFindUserByUsername() {
+    void shouldFindUserByUsername() {
         String username = "KyryloAdmin";
         AppUser user = new AppUser("Kyrylo",
                 username,
@@ -40,7 +42,7 @@ class AppUserRepositoryTest {
     }
 
     @Test
-    void itShouldNotFindUserByUsername() {
+    void shouldNotFindUserByUsername() {
         String username = "KyryloAdmin";
         Optional<AppUser> foundUser = underTest.findByUsername(username);
         assertFalse(foundUser.isPresent());
