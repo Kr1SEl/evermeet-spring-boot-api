@@ -37,7 +37,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v*/image/**").hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/api/v*/rating/**").hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/api/v*/meetup/**").hasAnyRole("ADMIN", "USER")
-                                .requestMatchers("/api/v*/user/**").hasAnyRole("ADMIN")
+                                .requestMatchers("/api/v*/user/**").hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated()
                 )
