@@ -1,3 +1,5 @@
+# Evermeet
+
 **Description:** "Evermeet" is a robust RESTful API built on Java Spring Boot, designed to facilitate the organization of group meetings and foster connections based on shared interests. Leveraging PostgreSQL for data storage and Azure Blob Storage for seamless image integration, Evermeet offers a dynamic platform for users to create, discover, and participate in meetups tailored to their preferences.
 
 **Key Features:**
