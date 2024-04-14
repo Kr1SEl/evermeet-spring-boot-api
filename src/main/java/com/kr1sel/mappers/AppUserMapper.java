@@ -10,6 +10,7 @@ public class AppUserMapper implements Function<AppUser, AppUserDTO> {
     public AppUserDTO apply(AppUser appUser) {
         return new AppUserDTO(
                 appUser.getUsername(),
+                appUser.getName(),
                 appUser.getAge(),
                 appUser.getLocation(),
                 appUser.getInterests()

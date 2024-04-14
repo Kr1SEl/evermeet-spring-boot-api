@@ -88,12 +88,12 @@ public class AppUserService implements UserDetailsService {
     }
 
     @Transactional
-    public void sendFriendshipRequest(Long targetUserId, AppUser senderModel)
+    public void sendFriendshipRequest(String targetUsername, AppUser senderModel)
             throws UserNotFoundException,
             FriendshipAlreadyEstablishedException,
             RequestAlreadySentException,
             FriendshipToUserIsNotAllowedException {
-        Optional<AppUser> target = appUserRepository.findById(targetUserId);
+        Optional<AppUser> target = appUserRepository.findByUsername(targetUsername);
         Optional<AppUser> sender = appUserRepository.findById(senderModel.getId());
         if(target.isPresent() && sender.isPresent()){
             AppUser targetUser = target.get();
@@ -122,10 +122,10 @@ public class AppUserService implements UserDetailsService {
     }
 
     @Transactional
-    public void removeFriendshipRequest(Long targetUserId, AppUser senderUser)
+    public void removeFriendshipRequest(String targetUsername, AppUser senderUser)
             throws UserNotFoundException,
             NothingToModifyException {
-        Optional<AppUser> target = appUserRepository.findById(targetUserId);
+        Optional<AppUser> target = appUserRepository.findByUsername(targetUsername);
         if(target.isPresent()){
             AppUser targetUser = target.get();
             if(targetUser.hasFriendRequestsFrom(senderUser)){
@@ -140,10 +140,10 @@ public class AppUserService implements UserDetailsService {
     }
 
     @Transactional
-    public void acceptFriendshipRequest(Long targetUserId, AppUser senderModel)
+    public void acceptFriendshipRequest(String targetUsername, AppUser senderModel)
             throws UserNotFoundException,
             NoFriendshipRequestException {
-        Optional<AppUser> target = appUserRepository.findById(targetUserId);
+        Optional<AppUser> target = appUserRepository.findByUsername(targetUsername);
         Optional<AppUser> sender = appUserRepository.findById(senderModel.getId());
         if(target.isPresent() && sender.isPresent()){
             AppUser targetUser = target.get();
@@ -162,10 +162,10 @@ public class AppUserService implements UserDetailsService {
     }
 
     @Transactional
-    public void removeFriend(Long targetUserId, AppUser senderModel)
+    public void removeFriend(String targetUsername, AppUser senderModel)
             throws UserNotFoundException,
             NothingToModifyException {
-        Optional<AppUser> target = appUserRepository.findById(targetUserId);
+        Optional<AppUser> target = appUserRepository.findByUsername(targetUsername);
         Optional<AppUser> sender = appUserRepository.findById(senderModel.getId());
         if(target.isPresent() && sender.isPresent()){
             AppUser targetUser = target.get();

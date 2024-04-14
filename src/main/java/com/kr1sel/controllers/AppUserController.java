@@ -32,37 +32,37 @@ public class AppUserController {
         return appUserService.deleteUserByObject(user);
     }
 
-    @PutMapping(path = "send-friend-request/{id}")
+    @PutMapping(path = "send-friend-request/{username}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void sendFriendshipRequest(@PathVariable Long id, @AuthenticationPrincipal AppUser user)
+    public void sendFriendshipRequest(@PathVariable String username, @AuthenticationPrincipal AppUser user)
             throws UserNotFoundException,
             FriendshipAlreadyEstablishedException,
             RequestAlreadySentException,
             FriendshipToUserIsNotAllowedException {
-        appUserService.sendFriendshipRequest(id, user);
+        appUserService.sendFriendshipRequest(username, user);
     }
 
-    @PutMapping(path = "remove-friend-request/{id}")
+    @PutMapping(path = "remove-friend-request/{username}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeFriendshipRequest(@PathVariable Long id, @AuthenticationPrincipal AppUser user)
+    public void removeFriendshipRequest(@PathVariable String username, @AuthenticationPrincipal AppUser user)
             throws UserNotFoundException,
             NothingToModifyException {
-        appUserService.removeFriendshipRequest(id, user);
+        appUserService.removeFriendshipRequest(username, user);
     }
 
-    @PutMapping(path = "accept-friend-request/{id}")
+    @PutMapping(path = "accept-friend-request/{username}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void acceptFriendshipRequest(@PathVariable Long id, @AuthenticationPrincipal AppUser user)
+    public void acceptFriendshipRequest(@PathVariable String username, @AuthenticationPrincipal AppUser user)
             throws UserNotFoundException,
             NoFriendshipRequestException {
-        appUserService.acceptFriendshipRequest(id, user);
+        appUserService.acceptFriendshipRequest(username, user);
     }
 
-    @PutMapping(path = "remove-friend/{id}")
+    @PutMapping(path = "remove-friend/{username}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeFriend(@PathVariable Long id, @AuthenticationPrincipal AppUser user)
+    public void removeFriend(@PathVariable String username, @AuthenticationPrincipal AppUser user)
             throws UserNotFoundException,
             NothingToModifyException {
-        appUserService.removeFriend(id, user);
+        appUserService.removeFriend(username, user);
     }
 }
