@@ -27,12 +27,10 @@ public record NewMeetupRequestDTO(
         int maxPeople,
 
         @NotNull
-        @NotBlank
         @Size(min = 1)
         Set<Interest> interests,
 
         @NotNull
-        @NotBlank
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime startDateTime
 ) {

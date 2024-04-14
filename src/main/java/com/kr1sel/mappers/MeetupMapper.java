@@ -13,7 +13,7 @@ public class MeetupMapper implements Function<Meetup, MeetupDTO> {
                 meetup.getLocation(),
                 meetup.isPrivate(),
                 meetup.getMaxPeople(),
-                meetup.getAuthor()
+                meetup.getAuthor().getUsername()
         );
     }
 }

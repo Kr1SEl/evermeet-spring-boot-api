@@ -45,7 +45,7 @@ public record NewAppUserRequestDTO(
         String location,
 
         @NotNull
-        @Size(min = 1)
+        @Size(min = 1, message = "You should choose at least one interest")
         Set<Interest> interests
 
 ) {

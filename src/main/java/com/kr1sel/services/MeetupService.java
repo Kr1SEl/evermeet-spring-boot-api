@@ -7,15 +7,14 @@ import com.kr1sel.mappers.MeetupMapper;
 import com.kr1sel.models.AppUser;
 import com.kr1sel.models.Meetup;
 import com.kr1sel.repositories.MeetupRepository;
+import com.kr1sel.utils.Interest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class MeetupService {
@@ -44,14 +43,18 @@ public class MeetupService {
 
     public List<MeetupDTO> getMeetupsFilteredByInterests(AppUser user, int page, int size){
         Pageable pageable = PageRequest.of(page, size);
-        return meetupRepository
-                .findByInterestsAndLocationAndStartDateTimeGreaterThanAndAuthorIdNot(
-                        user.getInterests(),
-                        user.getLocation(),
-                        LocalDateTime.now(),
-                        user.getId(),
-                        pageable)
-                .stream().map(meetupMapper).toList();
+        List<MeetupDTO> result = meetupRepository
+                    .findByInterestsAndLocationAndNotPrivate(
+                            user.getInterests()
+                                    .stream()
+                                    .map(interest -> (short) interest.ordinal())
+                                    .toArray(Short[]::new),
+                            user.getLocation(),
+                            LocalDateTime.now(),
+                            user.getId(),
+                            pageable)
+                    .stream().map(meetupMapper).toList();
+        return result;
     }
 
     public MeetupDTO getMeetupById(Long id) throws MeetupNotFoundException {

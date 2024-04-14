@@ -39,7 +39,7 @@ public class MeetupController {
     public String createMeetup(@RequestBody @Valid NewMeetupRequestDTO newMeetup,
                                @AuthenticationPrincipal AppUser user,
                                HttpServletRequest request){
-       return request.getRequestURI() + meetupService.createNewMeetup(newMeetup, user);
+       return request.getRequestURI() + '/' + meetupService.createNewMeetup(newMeetup, user);
     }
 
     @GetMapping(path = "{id}")
